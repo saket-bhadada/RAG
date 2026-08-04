@@ -1,17 +1,26 @@
 import os
 import tempfile
+import warnings
 
 from dotenv import load_dotenv
-from langchain_community.document_loaders import (TextLoader)
+
+# Suppress the DeprecationWarning triggered by langchain_community
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+# Now we can import TextLoader without the terminal yelling at us
+from langchain_community.document_loaders import TextLoader
 
 load_dotenv()
 
+
 def load_text_file():
-    with tempfile.NamedTemporaryFile(delete=False,suffix=".txt") as temp_file:
+    # Create a temporary text file
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_file:
         temp_file.write(b"This is temp file content")
         temp_file_path = temp_file.name
-    
+
     try:
+        # Use TextLoader as requested
         loader = TextLoader(temp_file_path)
         documents = loader.load()
 
@@ -20,7 +29,9 @@ def load_text_file():
             print(docs)
             print(docs.page_content)
     finally:
+        # Clean up the temporary file
         os.remove(temp_file_path)
+
 
 if __name__ == "__main__":
     load_text_file()
