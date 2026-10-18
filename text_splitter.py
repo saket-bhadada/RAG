@@ -79,3 +79,18 @@ def binary_search(arr, target):
     return -1
 '''
 
+def recursive_splitter():
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=500,
+        chunk_overlap=50,
+        separators=["\n\n","\n"," ",""]
+    )
+    chunks = splitter.split_text(SAMPLE_TEXT)
+    print(f"original length: {len(chunks)}")
+    print(f"number of chunks: {len(chunks)}")
+    print(f"chunk size: {[len(c) for c in chunks]}")
+    print(f"\nFirst chunk preview:\n{chunks[0][:200]}")
+
+
+if __name__ == '__main__':
+    recursive_splitter()
