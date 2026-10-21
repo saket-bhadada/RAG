@@ -1,3 +1,5 @@
+from dis import name
+
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings
@@ -70,3 +72,40 @@ print(f"Semantic chunks: {len(semantic_chunks)}")
 for i,chunk in enumerate(semantic_chunks):
     print(f"\n\nSemantic chunk {i}: {chunk}")
     print(chunk[:100] + '...' if len(chunk) > 100 else chunk)
+
+
+
+recursive_vectorstore = Chroma.from_texts(
+    recursive_chunks,
+    embeddings,
+    collection_name='recursive_chunks'
+)
+
+semantic_vectorstore = Chroma.from_texts(
+    semantic_chunks,
+    embeddings,
+    collection_name='semantic_chunks'
+)
+
+test_queries = [
+    "How do I authenticate with OAuth2?",
+    "What happens when I hit the rate limit?",
+    "How are webhooks secured?",
+    "What format are errors returned in?",
+]
+
+def test_retrieval(query,vectorstore,name):
+    result = vectorstore.similarity_search(query,k=1)
+    print(f"{name}: query {query}")
+    print(f"retrieved {len(result)} results")
+    return result[0].page_content
+
+print(f"\n{'='*60}")
+print("RETRIEVAL TEST")
+
+for query in test_queries:
+    print(f"\n{'='*60}")
+    recursive_result = test_retrieval(query,recursive_vectorstore,name)
+    print(recursive_result)
+    semantic_result = test_retrieval(query,semantic_vectorstore,name)
+    print(semantic_result)
