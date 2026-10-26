@@ -109,3 +109,12 @@ for query in test_queries:
     print(recursive_result)
     semantic_result = test_retrieval(query,semantic_vectorstore,name)
     print(semantic_result)
+
+
+parent_splitter = RecursiveCharacterTextSplitter(chunk_size=800,chunk_overlap=100)
+child_splitter = RecursiveCharacterTextSplitter(chunk_size=200,chunk_overlap=20)
+
+vectorstore = Chroma(
+    collection_name='recursive_chunks',
+    embeddings=embeddings,
+)
